@@ -1,8 +1,8 @@
-version: '3.8'
-
 services:
   app:
-    image: php:7.4-fpm
+    build:
+      context: ./php
+      dockerfile: Dockerfile
     container_name: app
     working_dir: /var/www
     volumes:
