@@ -9,7 +9,8 @@ class CollectionList extends Model
     protected $table = 'collection_lists';
 
     protected $fillable = [
-        'name_file',
+        'original_name',
+        'name',
         'path',
         'processed',
     ];

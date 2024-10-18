@@ -52,7 +52,15 @@
                         </div>
                     </div>
                 </div>
-                <button @click="sendForm" id="sendButton" class="flex w-full mt-3 justify-center rounded-md bg-emerald-600 p-3 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-emerald-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600">Enviar</button>
+                <button @click="sendForm" id="sendButton" class="flex w-full mt-3 justify-center rounded-md bg-emerald-600 p-3 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-emerald-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600">
+                    <span v-if="!isLoading">Enviar</span>
+                    <span v-else class="ml-2">
+                        <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                    </span>
+                </button>
             </div>
         </form>
     </div>
@@ -71,6 +79,7 @@ export default {
             fileUpload: null,
             errorMessage: null,
             successMessage: null,
+            isLoading: false,
         };
     },
     methods: {
@@ -88,12 +97,14 @@ export default {
 
             if (!validFormats.includes(file.type)) {
                 this.errorMessage = 'Formato de arquivo inválido. Por favor, envie um arquivo CSV.';
+                this.successMessage = null;
                 this.fileUpload = null;
                 return;
             }
 
             if (file.size > maxSize) {
                 this.errorMessage = 'O arquivo é muito grande. O tamanho máximo permitido é 200MB.';
+                this.successMessage = null;
                 this.fileUpload = null;
                 return;
             }
@@ -102,10 +113,21 @@ export default {
             this.errorMessage = null;
         },
         sendForm: function() {
+            if (!this.fileUpload) {
+                this.errorMessage = 'Por favor, selecione um arquivo para enviar.';
+                this.successMessage = null;
+                return;
+            }
+
+            if (this.isLoading) {
+                return;
+            }
+
             document.getElementById('sendButton').disabled = true;
             const formData = new FormData();
             formData.append('csrf', document.querySelector('meta[name="csrf-token"]').getAttribute('content'),);
             formData.append('file', this.fileUpload);
+            this.isLoading = true;
 
             axios.post(this.uploadUrl, formData, {
                 headers: {
@@ -113,11 +135,13 @@ export default {
                 }
             }).then(response => {
                 document.getElementById('sendButton').disabled = false;
-                debugger
                 this.successMessage = response.data.message;
+                this.errorMessage = null;
                 this.fileUpload = null;
+                this.isLoading = false;
             }).catch(error => {
                 document.getElementById('sendButton').disabled = false;
+                this.isLoading = false;
             });
         }
     }

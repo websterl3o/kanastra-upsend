@@ -25,7 +25,8 @@ class CollectionListController extends Controller
         $path = $request->file('file')->store('collection_lists');
 
         CollectionList::create([
-            'name_file' => $request->file('file')->getClientOriginalName(),
+            'original_name' => $request->file('file')->getClientOriginalName(),
+            'name' => $request->file('file')->hashName(),
             'path' => $path
         ]);
 

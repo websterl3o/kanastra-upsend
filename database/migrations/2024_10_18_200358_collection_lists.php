@@ -12,7 +12,8 @@ return new class extends Migration {
     {
         Schema::create('collection_lists', function (Blueprint $table) {
             $table->id();
-            $table->string('name_file');
+            $table->string('original_name');
+            $table->string('name');
             $table->string('path');
             $table->boolean('processed')->default(false);
             $table->timestamps();
