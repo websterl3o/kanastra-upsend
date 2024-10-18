@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use App\Models\CollectionList;
+use Symfony\Component\HttpFoundation\Response;
+use App\Http\Requests\StoreCollectionListRequest;
 
 class CollectionListController extends Controller
 {
@@ -13,37 +15,34 @@ class CollectionListController extends Controller
         // Code to list all resources
     }
 
-    // Show the form for creating a new resource.
     public function create()
     {
         return view('collection-list.create');
     }
 
-    // Store a newly created resource in storage.
-    public function store(Request $request)
+    public function store(StoreCollectionListRequest $request)
     {
-        // Code to store a new resource
-    }
+        $path = $request->file('file')->store('collection_lists');
 
-    // Display the specified resource.
+        CollectionList::create([
+            'name_file' => $request->file('file')->getClientOriginalName(),
+            'path' => $path
+        ]);
+
+        return response()->json(['message' => 'Lista e em processo de disparo de e-mails!'], Response::HTTP_CREATED);
+    }
     public function show($id)
     {
         // Code to display a specific resource
     }
-
-    // Show the form for editing the specified resource.
     public function edit($id)
     {
         // Code to show form for editing a specific resource
     }
-
-    // Update the specified resource in storage.
     public function update(Request $request, $id)
     {
         // Code to update a specific resource
     }
-
-    // Remove the specified resource from storage.
     public function destroy($id)
     {
         // Code to delete a specific resource

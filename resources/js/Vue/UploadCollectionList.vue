@@ -15,6 +15,17 @@
                                 <p class="text-sm leading-5 text-white m-2">{{ errorMessage }}</p>
                             </div>
                         </div>
+                        <div v-if="successMessage" class="flex bg-emerald-500 rounded-lg">
+                            <div class="flex">
+                                <svg class="h-6 w-6 text-white m-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10" stroke="white" fill="none"></circle>
+                                    <path d="M9 12l2 2 4-4" stroke="white"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="text-sm leading-5 text-white m-2">{{ successMessage }}</p>
+                            </div>
+                        </div>
                         <div class="mt-2 flex justify-center rounded-lg border border-dashed border-slate-900/25 px-6 py-10" @click="triggerFileUpload">
                             <div id="select-file" class="text-center">
                                 <svg class="mx-auto h-12 w-12 text-gray-300" version="1.1" id="Layer_1" viewBox="0 0 309.267 309.267" xml:space="preserve">
@@ -26,9 +37,9 @@
                                 </svg>
                                 <div v-if="!fileUpload">
                                     <div class="mt-4 flex text-sm leading-6 text-gray-600">
-                                        <label for="file-upload" class="relative cursor-pointer rounded-md bg-white font-semibold text-emerald-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-emerald-600 focus-within:ring-offset-2 hover:text-emerald-500">
+                                        <label for="file" class="relative cursor-pointer rounded-md bg-white font-semibold text-emerald-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-emerald-600 focus-within:ring-offset-2 hover:text-emerald-500">
                                             <span>Selecione seu arquivo aqui!</span>
-                                            <input id="file-upload" name="file-upload" type="file" class="sr-only" @change="handleFileUpload" required ref="fileUpload">
+                                            <input id="file-upload" name="file" type="file" class="sr-only" @change="handleFileUpload" required ref="fileUpload">
                                         </label>
                                     </div>
                                     <p class="text-xs leading-5 text-gray-600">CSV de até 200MB</p>
@@ -41,7 +52,7 @@
                         </div>
                     </div>
                 </div>
-                <button type="submit" class="flex w-full mt-3 justify-center rounded-md bg-emerald-600 p-3 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-emerald-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600">Enviar</button>
+                <button @click="sendForm" id="sendButton" class="flex w-full mt-3 justify-center rounded-md bg-emerald-600 p-3 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-emerald-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600">Enviar</button>
             </div>
         </form>
     </div>
@@ -49,10 +60,17 @@
 
 <script>
 export default {
+    props: {
+        uploadUrl: {
+            type: String,
+            required: true
+        }
+    },
     data() {
         return {
             fileUpload: null,
             errorMessage: null,
+            successMessage: null,
         };
     },
     methods: {
@@ -82,6 +100,25 @@ export default {
 
             this.fileUpload = file;
             this.errorMessage = null;
+        },
+        sendForm: function() {
+            document.getElementById('sendButton').disabled = true;
+            const formData = new FormData();
+            formData.append('csrf', document.querySelector('meta[name="csrf-token"]').getAttribute('content'),);
+            formData.append('file', this.fileUpload);
+
+            axios.post(this.uploadUrl, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            }).then(response => {
+                document.getElementById('sendButton').disabled = false;
+                debugger
+                this.successMessage = response.data.message;
+                this.fileUpload = null;
+            }).catch(error => {
+                document.getElementById('sendButton').disabled = false;
+            });
         }
     }
 };
