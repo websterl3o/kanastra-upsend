@@ -11,6 +11,9 @@ RUN apt-get update && apt-get install -y \
 RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash - \
     && apt-get install -y nodejs
 
+# Instalar Xdebug
+RUN pecl install xdebug && docker-php-ext-enable xdebug
+
 # Instalar Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 

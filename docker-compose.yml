@@ -8,6 +8,10 @@ services:
         volumes:
             - ./:/var/www
             - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
+            - ./php/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+        ports:
+            - "5173:5173" # Porta do Vite
+            - "9003:9003" # Porta do Xdebug
         networks:
             - laravel
 
@@ -32,6 +36,8 @@ services:
             MYSQL_ROOT_PASSWORD: root
             MYSQL_PASSWORD: root
             MYSQL_USER: laravel
+        ports:
+            - "3306:3306"
         volumes:
             - dbdata:/var/lib/mysql
         networks:

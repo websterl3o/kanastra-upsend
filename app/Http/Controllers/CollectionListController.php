@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\CollectionList;
+use App\Jobs\ProcessCollectionList;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Requests\StoreCollectionListRequest;
 
@@ -22,13 +23,15 @@ class CollectionListController extends Controller
 
     public function store(StoreCollectionListRequest $request)
     {
-        $path = $request->file('file')->store('collection_lists');
+        $path = $request->file('file')->store('collection-lists-' . now()->format('Y-m-d'));
 
-        CollectionList::create([
+        $collectionList = CollectionList::create([
             'original_name' => $request->file('file')->getClientOriginalName(),
             'name' => $request->file('file')->hashName(),
             'path' => $path
         ]);
+
+        ProcessCollectionList::dispatch($collectionList);
 
         return response()->json(['message' => 'Lista e em processo de disparo de e-mails!'], Response::HTTP_CREATED);
     }
