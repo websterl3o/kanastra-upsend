@@ -14,7 +14,7 @@ class StoreCollectionListRequest extends FormRequest
     public function rules()
     {
         return [
-            'file' => 'required|file|mimes:csv,txt|max:204800',
+            'file' => 'required|file|mimes:csv|max:204800',
         ];
     }
 

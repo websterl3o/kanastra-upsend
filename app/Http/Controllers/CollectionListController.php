@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\CollectionList;
 use App\Jobs\ProcessCollectionList;
 use Symfony\Component\HttpFoundation\Response;
