@@ -2,8 +2,10 @@
 
 namespace App\Jobs;
 
+use Illuminate\Support\Str;
 use App\Models\CollectionList;
 use App\Models\RegisterOfDebt;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
@@ -30,24 +32,37 @@ class RegisterAndSendBilling implements ShouldQueue
     public function handle(): void
     {
         foreach ($this->data as $row) {
-            if ($row[5] == 'debtID') {
+            if (Str::lower($row[5]) == 'debtid') {
                 continue;
             }
 
-            $register = RegisterOfDebt::firstOrCreate([
-                'uuid' => $row[5],
-                'amount' => $row[3],
-                'dueDate' => $row[4],
-                'name' => $row[0],
-                'email' => $row[2],
-                'government_id' => $row[1],
-                'collectionlist_id' => $this->collectionList->id,
-            ]);
-
-            if ($register->notified_at === null) {
-                // Mail::to($register->email)->send(new Billing($register));
-                // $register->update(['notified_at' => now()]);
-            }
+            $register = $this->registerBilling($row, $this->collectionList);
+            $this->sendBilling($register);
         }
+    }
+
+    protected function registerBilling(array $row, CollectionList $collectionList): RegisterOfDebt
+    {
+        Log::info("Getting or creating register Billing with uuid {$row[5]}.");
+        return RegisterOfDebt::firstOrCreate([
+            'uuid' => $row[5],
+            'amount' => $row[3],
+            'dueDate' => $row[4],
+            'name' => $row[0],
+            'email' => $row[2],
+            'government_id' => $row[1],
+            'collectionlist_id' => $collectionList->id,
+        ]);
+    }
+
+    protected function sendBilling(RegisterOfDebt $register): void
+    {
+        if ($register->notified_at != null) {
+            Log::info("Billing {$register->uuid} already notified.");
+            return;
+        }
+
+        Log::info("Sending billing {$register->uuid} to {$register->email} with amount {$register->amount} and update notified_at.");
+        $register->update(['notified_at' => now()]);
     }
 }

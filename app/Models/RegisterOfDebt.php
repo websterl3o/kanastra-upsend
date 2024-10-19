@@ -8,6 +8,12 @@ class RegisterOfDebt extends Model
 {
     protected $table = 'register_of_debt';
 
+    protected $primaryKey = 'uuid';
+
+    public $incrementing = false;
+
+    protected $keyType = 'string';
+
     protected $fillable = [
         'uuid',
         'amount',
@@ -17,5 +23,10 @@ class RegisterOfDebt extends Model
         'government_id',
         'collectionlist_id',
         'notified_at',
+    ];
+
+    protected $casts = [
+        'uuid' => 'string',
+        'notified_at' => 'datetime',
     ];
 }

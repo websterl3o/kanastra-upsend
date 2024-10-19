@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->string('original_name');
             $table->string('name');
             $table->string('path');
-            $table->boolean('processed')->default(false);
+            $table->dateTime('processed_at')->nullable();
             $table->timestamps();
         });
     }

@@ -12,6 +12,10 @@ class CollectionList extends Model
         'original_name',
         'name',
         'path',
-        'processed',
+        'processed_at',
+    ];
+
+    protected $casts = [
+        'processed_at' => 'datetime',
     ];
 }

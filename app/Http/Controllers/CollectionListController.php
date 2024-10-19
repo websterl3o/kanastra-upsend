@@ -7,14 +7,10 @@ use App\Models\CollectionList;
 use App\Jobs\ProcessCollectionList;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Requests\StoreCollectionListRequest;
+use Illuminate\Support\Facades\Log;
 
 class CollectionListController extends Controller
 {
-
-    public function index()
-    {
-        // Code to list all resources
-    }
 
     public function create()
     {
@@ -31,24 +27,10 @@ class CollectionListController extends Controller
             'path' => $path
         ]);
 
+        Log::info("Collection list {$collectionList->id} created with file {$collectionList->name}.");
+
         ProcessCollectionList::dispatch($collectionList);
 
         return response()->json(['message' => 'Lista e em processo de disparo de e-mails!'], Response::HTTP_CREATED);
-    }
-    public function show($id)
-    {
-        // Code to display a specific resource
-    }
-    public function edit($id)
-    {
-        // Code to show form for editing a specific resource
-    }
-    public function update(Request $request, $id)
-    {
-        // Code to update a specific resource
-    }
-    public function destroy($id)
-    {
-        // Code to delete a specific resource
     }
 }

@@ -6,6 +6,7 @@ use App\Models\CollectionList;
 use App\Models\RegisterOfDebt;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Support\Facades\Log;
 
 class ProcessCollectionList implements ShouldQueue
 {
@@ -27,6 +28,8 @@ class ProcessCollectionList implements ShouldQueue
      */
     public function handle(): void
     {
+        Log::info("Start - Processing collection list {$this->collectionList->id}");
+
         $chunkSize = 500;  // Definindo o tamanho do chunk
         $chunk = [];       // Armazena as linhas de cada chunk
         $row = 0;          // Contador de linha
@@ -44,5 +47,9 @@ class ProcessCollectionList implements ShouldQueue
                 $chunk = [];
             }
         }
+
+        $this->collectionList->update(['processed_at' => now()]);
+
+        Log::info("End - Processing collection list {$this->collectionList->id}");
     }
 }
