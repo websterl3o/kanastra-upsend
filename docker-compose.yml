@@ -1,5 +1,5 @@
 services:
-    app-upsend:
+    appUpsend:
         build:
             context: ./php
             dockerfile: Dockerfile
@@ -15,7 +15,7 @@ services:
         networks:
             - laravel
 
-    webserver-upsend:
+    webserverUpsend:
         image: nginx:alpine
         container_name: webserver
         restart: unless-stopped
@@ -27,7 +27,7 @@ services:
         networks:
             - laravel
 
-    db-upsend:
+    dbUpsend:
         image: mysql:5.7
         container_name: db
         restart: unless-stopped
