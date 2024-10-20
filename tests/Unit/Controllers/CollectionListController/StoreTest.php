@@ -4,7 +4,6 @@ namespace Tests\Unit\Controllers\CollectionListController;
 
 use Mockery;
 use Tests\TestCase;
-use Mockery\MockInterface;
 use App\Models\CollectionList;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\UploadedFile;
@@ -18,6 +17,12 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class StoreTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function tearDown(): void
+    {
+        Mockery::close();
+        parent::tearDown();
+    }
 
     /**
      * @description O controller armazena uma nova lista de cobrança no formato csv e disparar um job para processá-la.
@@ -57,43 +62,44 @@ class StoreTest extends TestCase
     /**
      * @description Ele tenta armazenar uma nova lista de cobrança, porem uma exception é lançada quando tenta dar o CollectionList::create.
      */
-    // #[\PHPUnit\Framework\Attributes\Test]
-    // public function it_stores_a_new_collection_list_but_an_exception_is_thrown_when_trying_to_create_the_collection_list()
-    // {
-    //     Bus::fake();
-    //     Storage::fake('local');
-
-    //     $file = UploadedFile::fake()->create('collection-lists-' . now()->format('Y-m-d') . '.csv', 100, 'text/csv');
-
-    //     $mock = \Mockery::mock('overload:' . CollectionList::class);
-    //     $mock->shouldReceive('create')->andThrow(new \Exception('Error creating collection list'));
-
-    //     $request = StoreCollectionListRequest::create('/collection-lists', 'POST', [], [], ['file' => $file]);
-
-    //     $controller = new \App\Http\Controllers\CollectionListController();
-
-    //     $response = $controller->store($request);
-
-    //     $this->assertInstanceOf(JsonResponse::class, $response);
-    //     $this->assertEquals(Response::HTTP_INTERNAL_SERVER_ERROR, $response->getStatusCode());
-    // }
-
-    /**
-     * @description Ele tenta armazenar uma nova lista de cobrança, mas uma exception é lançada quando tenta salvar o arquivo.
-     */
+    #[\PHPUnit\Framework\Attributes\RunInSeparateProcess]
     #[\PHPUnit\Framework\Attributes\Test]
-    public function it_stores_a_new_collection_list_but_an_exception_is_thrown_when_trying_to_save_the_file()
+    public function it_stores_a_new_collection_list_but_an_exception_is_thrown_when_trying_to_create_the_collection_list()
     {
         Bus::fake();
         Storage::fake('local');
 
         $file = UploadedFile::fake()->create('collection-lists-' . now()->format('Y-m-d') . '.csv', 100, 'text/csv');
 
-        $this->partialMock(UploadedFile::class, function (MockInterface $mock) {
-            $mock->shouldReceive('store')->andThrow(new \Exception('Error saving file'));
-        });
+        // Mock the CollectionList model
+        $collectionListMock = \Mockery::mock('overload:App\Models\CollectionList');
+        $collectionListMock->shouldReceive('create')->andThrow(new \Exception('Error creating collection list'));
+
 
         $request = StoreCollectionListRequest::create('/collection-lists', 'POST', [], [], ['file' => $file]);
+
+        $controller = new \App\Http\Controllers\CollectionListController();
+
+        $response = $controller->store($request);
+
+        $this->assertInstanceOf(JsonResponse::class, $response);
+        $this->assertEquals(Response::HTTP_INTERNAL_SERVER_ERROR, $response->getStatusCode());
+    }
+
+    /**
+     * @description Ele tenta armazenar uma nova lista de cobrança, mas uma exception é lançada quando tenta salvar o arquivo.
+     */
+    #[\PHPUnit\Framework\Attributes\RunInSeparateProcess]
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function it_stores_a_new_collection_list_but_an_exception_is_thrown_when_trying_to_save_the_file()
+    {
+        Bus::fake();
+        Storage::fake('local');
+
+        $mockFile = Mockery::mock(UploadedFile::class);
+        $mockFile->shouldReceive('store')->andThrow(new \Exception('Error saving file'));
+
+        $request = StoreCollectionListRequest::create('/collection-lists', 'POST', [], [], ['file' => $mockFile]);
 
         $controller = new \App\Http\Controllers\CollectionListController();
 
