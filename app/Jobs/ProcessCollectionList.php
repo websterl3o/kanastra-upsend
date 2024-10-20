@@ -3,9 +3,10 @@
 namespace App\Jobs;
 
 use App\Models\CollectionList;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
 class ProcessCollectionList implements ShouldQueue
 {
@@ -77,6 +78,11 @@ class ProcessCollectionList implements ShouldQueue
 
     public function openFile(): \SplFileObject
     {
+        if (!Storage::exists(storage_path('app/private/' . $this->collectionList->path))) {
+            Log::error('File not found. Collection list ID: ' . $this->collectionList->id);
+            throw new \Exception('File not found. Collection list ID: ' . $this->collectionList->id);
+        }
+
         $file = new \SplFileObject(storage_path('app/private/' . $this->collectionList->path));
         $file->setFlags(\SplFileObject::READ_CSV);
 
