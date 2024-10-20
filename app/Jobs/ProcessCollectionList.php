@@ -13,7 +13,7 @@ class ProcessCollectionList implements ShouldQueue
     use Queueable;
 
     public $tries = 5;
-    private CollectionList $collectionList;
+    protected CollectionList $collectionList;
 
     /**
      * Create a new job instance.
@@ -21,6 +21,11 @@ class ProcessCollectionList implements ShouldQueue
     public function __construct(CollectionList $collectionList)
     {
         $this->collectionList = $collectionList;
+    }
+
+    public function collectionList(): CollectionList
+    {
+        return $this->collectionList;
     }
 
     /**
