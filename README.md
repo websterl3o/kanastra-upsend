@@ -1,4 +1,19 @@
-# kanastra-upsend
+# UpSend
+
+## Descrição do Projeto
+Projeto UpSend é uma aplicação que tem como objetivo realizar o upload de uma lista de cobrança e enviar um e-mail para cada cliente da lista.
+
+## Origem do Projeto
+O projeto foi desenvolvido como parte de um desafio do processo seletivo da empresa Kanastra para testar minhas habilidades técnicas.
+
+## Tecnologias Utilizadas
+- Docker
+- PHP 8.2
+- Laravel 11.9
+- PHPUnit 11.4
+- Vue 3.5
+- TailwindCSS 3.4
+- Vite 5
 
 ## Configuração do Ambiente
 1. Clone o repositório do projeto
