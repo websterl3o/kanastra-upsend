@@ -6,14 +6,17 @@ Projeto UpSend é uma aplicação que tem como objetivo realizar o upload de uma
 ## Origem do Projeto
 O projeto foi desenvolvido como parte de um desafio do processo seletivo da empresa Kanastra para testar minhas habilidades técnicas.
 
-## Tecnologias Utilizadas
-- Docker
-- PHP 8.2
-- Laravel 11.9
-- PHPUnit 11.4
-- Vue 3.5
-- TailwindCSS 3.4
-- Vite 5
+## Tecnologias e Ferramentas Utilizadas
+
+<div align="left">
+    <img src="https://img.shields.io/badge/-Docker-%23fff?style=for-the-badge&logo=docker&logoColor=2496ED" target="_blank">
+    <img src="https://img.shields.io/badge/-PHP-%23fff?style=for-the-badge&logo=php&logoColor=777BB4" target="_blank">
+    <img src="https://img.shields.io/badge/-Laravel-%23fff?style=for-the-badge&logo=laravel&logoColor=FF2D20" target="_blank">
+    <img src="https://img.shields.io/badge/-Vue.js-%23fff?style=for-the-badge&logo=vue.js&logoColor=4FC08D" target="_blank">
+    <img src="https://img.shields.io/badge/-PHPUnit-%23fff?style=for-the-badge&logo=phpunit&logoColor=4FC08D" target="_blank">
+    <img src="https://img.shields.io/badge/-Tailwindcss-%23fff?style=for-the-badge&logo=tailwindcss&logoColor=4FC08D" target="_blank">
+    <img src="https://img.shields.io/badge/-Vite-%23fff?style=for-the-badge&logo=vite&logoColor=4FC08D" target="_blank">
+</div>
 
 ## Configuração do Ambiente
 1. Clone o repositório do projeto
