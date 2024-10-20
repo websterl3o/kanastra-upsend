@@ -25,3 +25,4 @@ Homestead.json
 .scripts/*
 report.xml
 .phpunit.cache/*
+coverage-html/*

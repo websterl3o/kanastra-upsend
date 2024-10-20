@@ -131,4 +131,32 @@ class RegisterAndSendBillingTest extends DataBaseTestCase
         $this->assertDatabaseCount('register_of_debts', 2);
     }
 
+    /**
+     * @description Testa o método handle se receber o uuid como debtid pula o item.
+     */
+    #[Test]
+    public function it_handles_register_and_send_billing_with_debtid_as_uuid()
+    {
+        $this->refreshDatabase();
+        Log::shouldReceive('info')->times(3);
+
+        $collectionList = CollectionList::factory()->create();
+        $data = [
+            ['John Doe', '123456789', 'john@example.com', 100.00, '2023-12-31', 'debtid'],
+            ['Jane Doe', '987654321', 'jane@example.com', 200.00, '2023-12-31', 'debt-uuid-2'],
+        ];
+
+        $job = new RegisterAndSendBilling($collectionList, $data);
+        $job->handle();
+
+        $this->assertDatabaseMissing('register_of_debts', [
+            'uuid' => 'debtid',
+            'email' => 'john@example.com',
+        ]);
+
+        $this->assertDatabaseHas('register_of_debts', [
+            'uuid' => 'debt-uuid-2',
+            'email' => 'jane@example.com',
+        ]);
+    }
 }
