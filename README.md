@@ -29,8 +29,20 @@
     ```shellScript
     docker-compose exec app npm install
     ```
-8. Compilar os assets
-    ```shellScript
-    docker-compose exec app npm run build
-    ```
-9. Acesse o projeto em http://localhost:8000
+8. Acesse o projeto em http://localhost:9696
+
+## Comandos Úteis
+### Executar testes
+```shellScript
+docker-compose exec app php artisan test
+```
+
+### Gerar coverage html
+```shellScript
+docker-compose exec app php artisan test --coverage-html=coverage-html
+```
+
+### Executar os jobs
+```shellScript
+docker-compose exec app php artisan queue:work
+```
