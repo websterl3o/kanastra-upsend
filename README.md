@@ -1,10 +1,16 @@
 # UpSend
 
 ## Descrição do Projeto
-Projeto UpSend é uma aplicação que tem como objetivo realizar o upload de uma lista de cobrança e enviar um e-mail para cada cliente da lista.
-
-## Origem do Projeto
-O projeto foi desenvolvido como parte de um desafio do processo seletivo da empresa Kanastra para testar minhas habilidades técnicas.
+Projeto UpSend é uma aplicação que tem como objetivo realizar o upload de uma lista de cobrança (em csv) e enviar um e-mail para cada cliente da lista.
+- Origem do Projeto
+    O projeto foi desenvolvido como parte de um desafio do processo seletivo da empresa Kanastra para testar minhas habilidades técnicas.
+- Regras
+  - Criar um endpoint da API processar o arquivo;
+  - Baseado input recebido, o sistema precisa regularmente gerar os boletos para cobrança e disparar mensagens para os e-mails da lista;
+  - Necessário configurar um arquivo docker-compose para rodar o projeto dentro de contêineres.
+- Outros Detalhes
+  - O input do desafio é um CSV de 102160.9KB.
+  - O arquivo CSV contém 1.048.576 registros.
 
 ## Tecnologias e Ferramentas Utilizadas
 
