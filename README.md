@@ -46,3 +46,20 @@ docker-compose exec app php artisan test --coverage-html=coverage-html
 ```shellScript
 docker-compose exec app php artisan queue:work
 ```
+
+## Alguns Screenshots da tela do projeto:
+
+### Tela inicial de upload de lista de cobrança
+![Tela inicial de upload de lista de cobrança](./storage/screenshots/tela-inicial.png)
+
+### Caso não tenha nenhum arquivo anexado e tentar enviar
+![Caso não tenha nenhum arquivo anexado e tentar enviar](./storage/screenshots/erro-arquivo-nao-anexado.png)
+
+### Caso o arquivo anexado não seja um arquivo CSV
+![Caso o arquivo anexado não seja um arquivo CSV](./storage/screenshots/erro-arquivo-nao-csv.png)
+
+### Anexando um arquivo CSV
+![Anexando um arquivo CSV](./storage/screenshots/anexando-arquivo-csv.png)
+
+### Após selecionar e enviar o arquivo no formato correto
+![Após selecionar e enviar o arquivo no formato correto](./storage/screenshots/arquivo-enviado-com-sucesso.png)
