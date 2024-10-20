@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class RegisterOfDebt extends Model
 {
-    protected $table = 'register_of_debt';
+    use HasFactory;
+
+    protected $table = 'register_of_debts';
 
     protected $primaryKey = 'uuid';
 

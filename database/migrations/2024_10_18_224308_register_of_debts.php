@@ -10,7 +10,7 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('register_of_debt', function (Blueprint $table) {
+        Schema::create('register_of_debts', function (Blueprint $table) {
             $table->string('uuid')->primary();
             $table->string('amount');
             $table->string('dueDate');

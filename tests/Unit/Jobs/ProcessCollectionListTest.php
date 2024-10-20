@@ -5,14 +5,12 @@ namespace Tests\Unit\Jobs;
 use Mockery;
 use Tests\DataBaseTestCase;
 use App\Models\CollectionList;
-use PHPUnit\Event\Runtime\PHP;
 use Illuminate\Http\UploadedFile;
 use App\Jobs\ProcessCollectionList;
 use Illuminate\Support\Facades\Bus;
 use App\Jobs\RegisterAndSendBilling;
 use PHPUnit\Framework\Attributes\Test;
 use Illuminate\Support\Facades\Storage;
-use PHPUnit\Framework\Attributes\IgnoreDeprecations;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 
 class ProcessCollectionListTest extends DataBaseTestCase

@@ -14,8 +14,8 @@ class RegisterAndSendBilling implements ShouldQueue
     use Queueable;
 
     public $tries = 5;
-    private CollectionList $collectionList;
-    private array $data;
+    protected CollectionList $collectionList;
+    protected array $data;
 
     /**
      * Create a new job instance.
@@ -41,18 +41,25 @@ class RegisterAndSendBilling implements ShouldQueue
         }
     }
 
-    protected function registerBilling(array $row, CollectionList $collectionList): RegisterOfDebt
+    protected function registerBilling(array $row): RegisterOfDebt
     {
-        Log::info("Getting or creating register Billing with uuid {$row[5]}.");
-        return RegisterOfDebt::firstOrCreate([
-            'uuid' => $row[5],
-            'amount' => $row[3],
-            'dueDate' => $row[4],
-            'name' => $row[0],
-            'email' => $row[2],
-            'government_id' => $row[1],
-            'collectionlist_id' => $collectionList->id,
-        ]);
+        Log::info("Searching for register Billing with uuid {$row[5]}.");
+        $register = RegisterOfDebt::find($row[5]);
+
+        if ($register == null) {
+            Log::info("-- Creating register Billing with uuid {$row[5]}.");
+            $register = RegisterOfDebt::create([
+                'uuid' => $row[5],
+                'email' => $row[2],
+                'government_id' => $row[1],
+                'amount' => $row[3],
+                'dueDate' => $row[4],
+                'name' => $row[0],
+                'collectionlist_id' => $this->collectionList->id,
+            ]);
+        }
+
+        return $register;
     }
 
     protected function sendBilling(RegisterOfDebt $register): void
