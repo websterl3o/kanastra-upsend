@@ -3,7 +3,6 @@
 namespace App\Jobs;
 
 use App\Models\CollectionList;
-use App\Models\RegisterOfDebt;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Log;
@@ -35,26 +34,52 @@ class ProcessCollectionList implements ShouldQueue
     {
         Log::info("Start - Processing collection list {$this->collectionList->id}");
 
-        $chunkSize = 500;  // Definindo o tamanho do chunk
-        $chunk = [];       // Armazena as linhas de cada chunk
-        $row = 0;          // Contador de linha
+        $chunkSize = 500;
+        $chunk = [];
+        $packages = [];
 
-        $file = new \SplFileObject(storage_path('app/private/' . $this->collectionList->path));
-        $file->setFlags(\SplFileObject::READ_CSV);
+        $file = $this->openFile();
 
-        while (!$file->eof()) {
-            $data = $file->fgetcsv();
+        while (($data = $file->fgetcsv()) !== false) {
+            if (count($data) < 6) {
+                continue;
+            }
+
             $chunk[] = $data;
-            $row++;
 
-            if ($row % $chunkSize === 0) {
-                RegisterAndSendBilling::dispatch($this->collectionList, $chunk);
+            if (count($chunk) === $chunkSize) {
+                $packages[] = $chunk;
                 $chunk = [];
             }
         }
 
+        if (!empty($chunk)) {
+            $packages[] = $chunk;
+        }
+
+        array_walk($packages, function ($package) {
+            $this->processRegisterAndSendBilling($package);
+        });
+
         $this->collectionList->update(['processed_at' => now()]);
 
         Log::info("End - Processing collection list {$this->collectionList->id}");
+    }
+
+    public function processRegisterAndSendBilling(array $chunk): void
+    {
+        if (count($chunk) === 0) {
+            return;
+        }
+
+        RegisterAndSendBilling::dispatch($this->collectionList, $chunk);
+    }
+
+    public function openFile(): \SplFileObject
+    {
+        $file = new \SplFileObject(storage_path('app/private/' . $this->collectionList->path));
+        $file->setFlags(\SplFileObject::READ_CSV);
+
+        return $file;
     }
 }
