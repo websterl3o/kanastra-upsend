@@ -3,6 +3,7 @@
 namespace Tests\Unit\Jobs;
 
 use Mockery;
+use SplFileObject;
 use Tests\DataBaseTestCase;
 use App\Models\CollectionList;
 use Illuminate\Http\UploadedFile;
@@ -42,7 +43,7 @@ class ProcessCollectionListTest extends DataBaseTestCase
         $job = Mockery::mock(ProcessCollectionList::class, [$collectionList])->makePartial();
         $job->shouldReceive('openFile')
             ->once()
-            ->andReturn(new \SplFileObject(base_path($path)));
+            ->andReturn(new SplFileObject(base_path($path)));
 
         Bus::fake();
 
@@ -72,7 +73,7 @@ class ProcessCollectionListTest extends DataBaseTestCase
         $job = Mockery::mock(ProcessCollectionList::class, [$collectionList])->makePartial();
         $job->shouldReceive('openFile')
             ->once()
-            ->andReturn(new \SplFileObject(base_path($path)));
+            ->andReturn(new SplFileObject(base_path($path)));
 
         Bus::fake();
 
@@ -102,7 +103,7 @@ class ProcessCollectionListTest extends DataBaseTestCase
         $job = Mockery::mock(ProcessCollectionList::class, [$collectionList])->makePartial();
         $job->shouldReceive('openFile')
             ->once()
-            ->andReturn(new \SplFileObject(base_path($path)));
+            ->andReturn(new SplFileObject(base_path($path)));
 
         Bus::fake();
 
@@ -164,7 +165,7 @@ class ProcessCollectionListTest extends DataBaseTestCase
         $job = Mockery::mock(ProcessCollectionList::class, [$collectionList])->makePartial();
         $job->shouldReceive('openFile')
             ->once()
-            ->andReturn(new \SplFileObject(base_path($path)));
+            ->andReturn(new SplFileObject(base_path($path)));
 
         Bus::fake();
 
@@ -198,17 +199,15 @@ class ProcessCollectionListTest extends DataBaseTestCase
     #[Test]
     public function it_returns_a_SplFileObject(): void
     {
-        $this->markTestSkipped(
-            'Teste para rever, o arquivo não é criado no disco e causa exception no job.',
-        );
+        Mockery::close();
+        $this->refreshDatabase();
 
-        Storage::fake();
         $fileOriginalName = 'input.csv';
         $fileContent = 'content';
 
         $file = UploadedFile::fake()->create($fileOriginalName, 1024, 'text/csv', $fileContent);
 
-        $path = $file->storeAs('private', 'collection-lists-' . now()->format('Y-m-d'));
+        $path = $file->store('collection-lists-' . now()->format('Y-m-d'));
 
         $collectionList = CollectionList::factory()->create([
             'original_name' => $fileOriginalName,
@@ -220,6 +219,6 @@ class ProcessCollectionListTest extends DataBaseTestCase
 
         $file = $job->openFile();
 
-        $this->assertInstanceOf(\SplFileObject::class, $file);
+        $this->assertInstanceOf(SplFileObject::class, $file);
     }
 }

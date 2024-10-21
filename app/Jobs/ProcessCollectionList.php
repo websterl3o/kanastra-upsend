@@ -78,7 +78,7 @@ class ProcessCollectionList implements ShouldQueue
 
     public function openFile(): \SplFileObject
     {
-        if (!Storage::exists(storage_path('app/private/' . $this->collectionList->path))) {
+        if (!Storage::exists($this->collectionList->path)) {
             Log::error('File not found. Collection list ID: ' . $this->collectionList->id);
             throw new \Exception('File not found. Collection list ID: ' . $this->collectionList->id);
         }
